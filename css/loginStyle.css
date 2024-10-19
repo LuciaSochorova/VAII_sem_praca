@@ -10,7 +10,7 @@ body, html {
     height: 100%;
 }
 
-.form {
+form {
     max-width: 768px;
     width: 100%;
     padding: 30px;
