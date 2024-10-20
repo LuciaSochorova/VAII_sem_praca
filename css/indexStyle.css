@@ -13,30 +13,3 @@ select {
     text-align: center;
 }
 
-.card {
-    --borderRadius: 10px;
-    border: none;
-    border-radius: var(--borderRadius);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-}
-
-.card-img-top {
-    width: 100%;
-    height: auto;
-    border-top-left-radius: var(--borderRadius);
-    border-top-right-radius: var(--borderRadius);
-    object-fit: cover;
-    aspect-ratio: 16 / 9;
-}
-
-
-.card a {
-    text-decoration: none;
-    color: black;
-}
-
-.card a:hover {
-    text-decoration: underline;
-}
-
-
