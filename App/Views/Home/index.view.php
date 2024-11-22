@@ -1,31 +1,51 @@
-<div class="container-fluid">
-    <div class="row">
-        <div class="col mt-5">
-            <div class="text-center">
-                <h2>Vaííčko MVC FW</h2>
-                <img src="public/images/vaiicko_logo.png">
-                <p>
-                    Gratulujeme vám, úspešne sa vám podarilo nainštalovať a spustiť framework
-                    <strong>Vaííčko</strong> <?= \App\Config\Configuration::FW_VERSION ?>!<br>
-                    Dúfame, že sa Vám pomocou tohto frameworku vytvoríte nejakú skvelú aplikáciu.<br>
-                </p>
-                <p>
-                    Tento jednoduchý framework bol vytvorený pre lepšie pochopenie architektúry MVC.<br>
-                    Je určený pre študentov predmetu <em>vývoj aplikácií pre internet a intranet</em>, ale nielen im.
-                </p>
-            </div>
+<?php
+/** @var \App\Core\LinkGenerator $link */
+
+/** @var Array $data */
+
+
+?>
+
+<div class="container mt-5">
+
+    <div class="row mb-3 filter bg-secondary-subtle">
+        <div class="col-md-6 d-flex flex-column align-items-center justify-content-center">
+            <label for="filterType">Typ jedla:</label>
+            <select class="form-control " id="filterType">
+                <option value="all">Všetky</option>
+                <option value="slane">Slané</option>
+                <option value="sladke">Sladké</option>
+            </select>
+        </div>
+        <div class="col-md-6 d-flex flex-column align-items-center justify-content-center">
+            <label for="filterTime">Čas prípravy:</label>
+            <select class="form-control" id="filterTime">
+                <option value="all">Všetky</option>
+                <option value="15">Do 15 minút</option>
+                <option value="30">Do 30 minút</option>
+                <option value="60">Do 1 hodiny</option>
+            </select>
         </div>
     </div>
-    <div class="row mt-3">
-        <div class="col text-center">
-            <h4>Autori</h4>
-            <div>
-                <a href="mailto:Patrik.Hrkut@fri.uniza.sk">doc. Ing. Patrik Hrkút, PhD.</a><br>
-                <a href="mailto:Michal.Duracik@fri.uniza.sk">Ing. Michal Ďuračík, PhD.</a><br>
-                <a href="mailto:Matej.Mesko@fri.uniza.sk">Ing. Matej Meško, PhD.</a><br><br>
-                &copy; 2020-<?= date('Y') ?> Žilinská univerzita v Žiline, Fakulta riadenia a informatiky, Katedra
-                softvérových technológií
-            </div>
+
+    <div class="row mb-3">
+        <div class="col-md-12 text-center">
+            <button class="btn btn-dark">Ďaľšie inšpirácie</button>
         </div>
     </div>
+
+
+    <div class="row mt-5 row-cols-1 row-cols-md-2 row-cols-xl-3">
+
+        <?php
+        foreach ($data['recipes'] as $recipe) { ?>
+            <div class="col">
+                <?php
+                require "App/Views/Recipe/recipeCard.view.php";
+                ?>
+            </div>
+        <?php } ?>
+
+    </div>
+
 </div>

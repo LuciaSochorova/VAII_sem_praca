@@ -34,8 +34,9 @@ class AuthController extends AControllerBase
         if (isset($formData['submit'])) {
             $logged = $this->app->getAuth()->login($formData['login'], $formData['password']);
             if ($logged) {
-                return $this->redirect($this->url("admin.index"));
+                return $this->redirect($this->url("home.index"));
             }
+
         }
 
         $data = ($logged === false ? ['message' => 'Zlý login alebo heslo!'] : []);
@@ -49,6 +50,17 @@ class AuthController extends AControllerBase
     public function logout(): Response
     {
         $this->app->getAuth()->logout();
-        return $this->html();
+        return $this->redirect($this->url("home.index")) ;
+    }
+
+    public function signin(): Response {
+        $formData = $this->app->getRequest()->getPost();
+        $exist = true;
+        if (isset($formData['submit'])) {
+            //TODO
+        }
+
+        $data = ($exist === true ? ["message" => "Emailová adresa sa už používa"] : []);
+        return $this->html($data);
     }
 }

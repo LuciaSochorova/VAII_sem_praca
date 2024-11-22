@@ -1,7 +1,77 @@
-.navbar {
-    border-bottom: 1px solid grey;
+.filter {
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+
+}
+.form-control {
+    max-width: 50%;
 }
 
-.navbar-brand img {
-    width: 50px;
+.card {
+    --borderRadius: 10px;
+    border: none;
+    border-radius: var(--borderRadius);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-img-top {
+    width: 100%;
+    height: auto;
+    border-top-left-radius: var(--borderRadius);
+    border-top-right-radius: var(--borderRadius);
+    object-fit: cover;
+    aspect-ratio: 16 / 9;
+}
+
+
+.card a {
+    text-decoration: none;
+    color: black;
+}
+
+.card a:hover {
+    text-decoration: underline;
+}
+
+
+label {
+    margin-bottom: 8px;
+    margin-top: 8px;
+}
+
+select, input {
+    box-shadow: 0 1px 1px rgba(0,0,0,0.5);
+    text-align: center;
+    max-width: 570px;
+    width: 100%;
+}
+
+.search_btn {
+    padding: 8px 26px;
+}
+
+.recipe_image {
+    max-width: 800px;
+    width: 100%;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+}
+.recipe_view {
+    table {
+        max-width: 90%;
+        margin: auto;
+    }
+
+    td, tr {
+        text-align: center;
+    }
+
+    th:first-child {
+        border-top-left-radius: 10px;
+    }
+
+    th:last-child {
+        border-top-right-radius: 10px;
+    }
 }
