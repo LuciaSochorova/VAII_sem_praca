@@ -15,7 +15,7 @@
             crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="public/css/styl.css">
-    <script src="public/js/script.js"></script>
+    <script src="public/js/script.js" type="module" defer></script>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -31,6 +31,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="<?= $link->url("search.index")?>">Vyhľadávanie</a>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= $link->url("recipe.add")?>">Pridať recept</a>
+                </li>
+
                 <?php if ($auth->isLogged()) { ?>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Profil</a>

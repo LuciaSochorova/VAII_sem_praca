@@ -10,7 +10,7 @@ class Recipe extends Model
     protected string $description;
     protected int $minutes;
     protected int $portions;
-    protected string $image;
+    protected ?string $image;
     protected ?string $category;
     protected ?string $notes;
 
@@ -69,7 +69,7 @@ class Recipe extends Model
         return $this->image;
     }
 
-    public function setImage(string $image): void
+    public function setImage(?string $image): void
     {
         $this->image = $image;
     }

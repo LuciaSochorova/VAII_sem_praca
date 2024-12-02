@@ -5,7 +5,7 @@
 
 <div class="card mb-4">
     <a href="<?= $link->url("recipe.index", ["id" => $recipe->getId()]) ?>">
-        <img src="<?= $recipe->getImage() ?>" class="card-img-top"
+        <img src="<?= $recipe->getImage() ?? "public/images/empty_plate.jpg" ?>" class="card-img-top"
              alt="Obrázok receptu">
     </a>
     <div class="card-body">

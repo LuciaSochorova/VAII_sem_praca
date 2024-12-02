@@ -7,7 +7,7 @@
     <div class="mb-3">
         <h1 class="text-center"><?= $data['recipe']->getTitle() ?></h1>
         <p class="text-center text-muted"><?= $data['recipe']->getDescription() ?> </p>
-        <img src="<?= $data['recipe']->getImage() ?> " class="mx-auto d-block recipe_image" alt="Obrázok receptu">
+        <img src="<?= $data['recipe']->getImage() ?? "public/images/empty_plate.jpg" ?> " class="mx-auto d-block recipe_image" alt="Obrázok receptu">
     </div>
 
     <div class="text-center mb-2">
