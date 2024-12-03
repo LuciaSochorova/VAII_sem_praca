@@ -3,8 +3,13 @@
 namespace App\Controllers;
 
 use App\Core\AControllerBase;
+use App\Core\HTTPException;
 use App\Core\Responses\Response;
+use App\Models\Ingredient;
 use App\Models\Recipe;
+use App\Models\Recipe_ingredient;
+use App\Models\RecipeIngredient;
+use App\Models\Step;
 
 
 class RecipeController extends AControllerBase
@@ -15,20 +20,29 @@ class RecipeController extends AControllerBase
      */
     public function index(): Response
     {
-        $id = $this->request()->getValue("id");
+        $id = (int) $this->request()->getValue("id");
 
-        /* TODO nahradiť načítaním z DB*/
-        $recipe = new Recipe();
-        $recipe->setId($id);
-        $recipe->setTitle("Dáky názov receptu");
-        $recipe->setDescription("Dáky popis receptu jfanrif iahfan ipjuhae hhufajpeuifapiuefiajfeiuhfa p fhppurvhrhvapfhrfuhap ihufrahfp afhpuiafhpaufhurhfuaf hurf haf purhfuhfua fuaf ");
-        $recipe->setImage(null);
-        $recipe->setNotes(null);
-        $recipe->setPortions(4);
-        $recipe->setMinutes(17);
+        $recipe = Recipe::getOne($id);
+        if (is_null($recipe)) {
+            throw new HTTPException(404);
+        }
+
+        $steps = Step::getAll(whereClause: "recipe_id = ?", whereParams: [$id], orderBy: "`order`");
+
+        $ingredients = [];
+        foreach (Recipe_ingredient::getAll("recipe_id = ?", [$id]) as $recipe_ingredient) {
+            $ingredient = Ingredient::getOne($recipe_ingredient->getIngredientId());
+            $ingredients[] = new RecipeIngredient( $ingredient->getName(),$recipe_ingredient->getAmount());
+        }
+
+
+
+
         return $this->html(
             [
-                'recipe' => $recipe
+                'recipe' => $recipe,
+                'steps' => $steps,
+                'ingredients' => $ingredients
             ]
         );
 

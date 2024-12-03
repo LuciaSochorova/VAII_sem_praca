@@ -1,5 +1,9 @@
 <?php
 /** @var Array $data */
+
+use App\Models\RecipeIngredient;
+use App\Models\Step;
+
 ?>
 
 <div class="container mt-5 recipe_view">
@@ -10,11 +14,13 @@
         <img src="<?= $data['recipe']->getImage() ?? "public/images/empty_plate.jpg" ?> " class="mx-auto d-block recipe_image" alt="Obrázok receptu">
     </div>
 
+    <!-- TODO
     <div class="text-center mb-2">
         <button class="btn btn-dark"><i class="bi bi-box2-heart"></i>
             Uložiť
         </button>
     </div>
+    -->
 
 
     <div class="row mb-4">
@@ -38,44 +44,29 @@
                     <th>Množstvo</th>
                 </tr>
 
-                <tr>
-                    <td>Múka</td>
-                    <td>200g</td>
-                </tr>
-                <tr>
-                    <td>Vajcia</td>
-                    <td>2</td>
-                </tr>
-                <tr>
-                    <td>Cukor</td>
-                    <td>100g</td>
-                </tr>
-
+                <?php
+                    /** @var RecipeIngredient $ingredient */
+                    foreach ($data['ingredients'] as $ingredient) { ?>
+                        <tr>
+                            <td><?= $ingredient->getName() ?></td>
+                            <td><?= $ingredient->getAmount()?></td>
+                        </tr>
+                <?php
+                    }
+                ?>
 
             </table>
         </div>
         <div class="col-md-6">
             <h3 class="mb-2">Postup</h3>
             <ol>
-                <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
-                <li>Duis et dictum enim.</li>
-                <li>Nulla eleifend, eros vel bibendum aliquam, odio tellus vulputate urna, quis aliquam leo arcu quis
-                    diam.
-                </li>
-                <li>In vel augue elit. Vestibulum a risus at nunc ultricies rhoncus.</li>
-                <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
-                <li>Duis et dictum enim.</li>
-                <li>Nulla eleifend, eros vel bibendum aliquam, odio tellus vulputate urna, quis aliquam leo arcu quis
-                    diam.
-                </li>
-                <li>In vel augue elit. Vestibulum a risus at nunc ultricies rhoncus.</li>
-                <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
-                <li>Duis et dictum enim.</li>
-                <li>Nulla eleifend, eros vel bibendum aliquam, odio tellus vulputate urna, quis aliquam leo arcu quis
-                    diam.
-                </li>
-                <li>In vel augue elit. Vestibulum a risus at nunc ultricies rhoncus.</li>
-
+                <?php
+                /** @var Step $step */
+                foreach ($data['steps'] as $step) { ?>
+                    <li><?= $step->getText()?></li>
+                    <?php
+                }
+                ?>
             </ol>
         </div>
     </div>
