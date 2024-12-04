@@ -3,7 +3,7 @@ export class DragAndDropList {
      *
      * @type {Element}
      */
-    #stepList;
+    #list;
 
     /**
      *
@@ -13,10 +13,10 @@ export class DragAndDropList {
 
 
     /**
-     * @param {Element} stepList
+     * @param {Element} list
      */
-    constructor(stepList) {
-        this.#stepList = stepList;
+    constructor(list) {
+        this.#list = list;
         this.#draggedElement = null;
     }
 
@@ -24,13 +24,18 @@ export class DragAndDropList {
      * @param {Element} li
      */
     addItem(li) {
-        li.draggable = true;
-        this.#addDragAndDropEvents(li);
-        this.#stepList.appendChild(li);
+
+        this.addDragAndDropEvents(li);
+        this.#list.appendChild(li);
     }
 
-    #addDragAndDropEvents(li) {
 
+    get list() {
+        return this.#list;
+    }
+
+    addDragAndDropEvents(li) {
+        li.draggable = true;
 
         li.addEventListener("dragstart", () => {
                 li.classList.add('dragging');

@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Exception;
+use stdClass;
+
 class RecipeIngredient
 {
     private string $name;
@@ -13,6 +16,19 @@ class RecipeIngredient
     }
 
 
+    /**
+     * @throws Exception
+     */
+    static public function fromJson(stdClass $json): RecipeIngredient {
+        $name = property_exists($json, 'name') ? trim(strip_tags($json->name))  : throw new Exception();
+        $amount = property_exists($json, 'amount') ? trim(strip_tags($json->amount)) : throw new Exception();
+
+        if (empty($name) || empty($amount)) {
+            throw new Exception();
+        }
+
+        return new RecipeIngredient(mb_strtolower($name), $amount);
+    }
 
     public function getName(): string
     {

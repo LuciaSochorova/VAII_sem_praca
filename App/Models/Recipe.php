@@ -1,6 +1,11 @@
 <?php
+
 namespace App\Models;
+
 use App\Core\Model;
+use App\Helpers\RecipeCategory;
+use Exception;
+use stdClass;
 
 class Recipe extends Model
 {
@@ -17,6 +22,28 @@ class Recipe extends Model
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function fromJson(stdClass $json): Recipe
+    {
+        $recipe = new Recipe();
+        $recipe->id = property_exists($json, 'id') ? filter_var($json->id, FILTER_VALIDATE_INT, ["options" => ["min_range" => 1], 'flags' => FILTER_NULL_ON_FAILURE,]) : null;
+        $recipe->author_id = property_exists($json, 'author_id') ? (filter_var($json->author_id, FILTER_VALIDATE_INT, ["options" => ["min_range" => 1], 'flags' => FILTER_NULL_ON_FAILURE,]) ?? throw new Exception()): throw new Exception();
+        $recipe->title = property_exists($json, 'title') ? trim(strip_tags($json->title)): throw new Exception();
+        $recipe->description = property_exists($json, 'description') ? trim(strip_tags($json->description)) : throw new Exception();
+        $recipe->minutes = property_exists($json, 'minutes') ? (filter_var($json->minutes, FILTER_VALIDATE_INT, ["options" => ["min_range" => 1], 'flags' => FILTER_NULL_ON_FAILURE,]) ?? throw new Exception()) : throw new Exception();
+        $recipe->portions = property_exists($json, 'portions') ? (filter_var($json->portions, FILTER_VALIDATE_INT, ["options" => ["min_range" => 1], 'flags' => FILTER_NULL_ON_FAILURE,]) ?? throw new Exception()) : throw new Exception();
+        $recipe->image = property_exists($json, 'image') && !empty(trim(strip_tags($json->image)) ) ? trim(strip_tags($json->image)) : null;
+        $recipe->category = property_exists($json, 'category') ? RecipeCategory::tryFrom($json->category)->value : null;
+        $recipe->notes = property_exists($json, 'notes') && !empty(trim(strip_tags($json->notes))) ? trim(strip_tags($json->notes)) : null;
+        if (empty($recipe->title) || empty($recipe->description)) {
+            throw new Exception();
+        }
+
+        return $recipe;
     }
 
     public function setId(?int $id): void

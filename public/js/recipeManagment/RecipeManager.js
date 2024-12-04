@@ -13,10 +13,22 @@ class RecipeManager {
         this.#stepList = new DragAndDropList(document.getElementById("stepList"));
 
 
+        for (let tr of document.getElementsByClassName("recipeIngredient")) {
+            let rmButton = tr.querySelector("button");
+            rmButton.onclick = () => this.removeIngredient(rmButton);
+        }
+
+        for (let li of this.#stepList.list.children) {
+            this.#stepList.addDragAndDropEvents(li);
+            let rmButton = li.querySelector("button");
+            rmButton.onclick = () => this.removeStep(rmButton);
+        }
+
+
         document.getElementById("addStepButton").onclick = () => {
             let stepText = document.getElementById("newStep").value.trim();
             if (stepText) {
-                let li = document.createElement('li');
+                let li = document.createElement("li");
                 li.className = "list-group-item d-flex align-items-center justify-content-between";
                 li.innerHTML = `
                     <textarea class="form-control mx-3" rows="2">${stepText}</textarea>
@@ -35,6 +47,7 @@ class RecipeManager {
             let amount = document.getElementById('ingredientAmount').value.trim();
             if (ingredient && amount) {
                 let tr = document.createElement('tr');
+                tr.className = "recipeIngredient";
                 tr.innerHTML = `
                     <td class="w-50">${ingredient}</td>
                     <td class="w-25">${amount}</td>
@@ -47,6 +60,18 @@ class RecipeManager {
                 document.getElementById('ingredientAmount').value = '';
             }
         }
+
+
+        document.getElementById("saveRecipe").onclick = async () => {
+            if (this.isValid()) {
+                if (await this.#saveRecipe()) {
+                    window.location.replace("http://localhost/?c=recipe&a=manage");
+                    //history.back();
+                }
+
+            }
+
+        }
     }
 
     removeStep(button) {
@@ -58,6 +83,110 @@ class RecipeManager {
         let tr = button.closest("tr");
         tr.remove();
     }
+
+    isValid() {
+        let valid = document.getElementById("recipeForm").reportValidity();
+
+        if (!document.getElementById("ingredientsTableBody").children.length > 0) {
+            let div = document.createElement("div");
+            div.className = "alert alert-danger alert-dismissible fade show mb-1 mt-3";
+            div.role = "alert";
+            let closeButton = document.createElement("button");
+            closeButton.type = "button";
+            closeButton.className = "btn-close";
+            closeButton.setAttribute("data-bs-dismiss", "alert");
+            closeButton.setAttribute("aria-label", "Close");
+
+            div.textContent = "Recept musí mať aspoň jednu ingredienciu";
+            div.appendChild(closeButton);
+            document.getElementById("ingredientsDiv").prepend(div);
+            valid = false;
+
+
+        }
+
+        if (!this.#stepList.list.children.length > 0) {
+            let div = document.createElement("div");
+            div.className = "alert alert-danger alert-dismissible fade show mb-1 mt-3";
+            div.role = "alert";
+            let closeButton = document.createElement("button");
+            closeButton.type = "button";
+            closeButton.className = "btn-close";
+            closeButton.setAttribute("data-bs-dismiss", "alert");
+            closeButton.setAttribute("aria-label", "Close");
+
+            div.textContent = "Recept musí mať aspoň jeden krok";
+            div.appendChild(closeButton);
+            let prev = this.#stepList.list.previousSibling.previousSibling
+            prev.before(div);
+            valid = false;
+        }
+
+
+        return valid;
+    }
+
+    async #saveRecipe() {
+        try {
+            let recipeId = document.getElementById("recipeForm").getAttribute("data-id");
+            if (recipeId > 0) {
+                let response = await fetch(
+                    "http://localhost/?c=recipeApi&a=updateRecipe&id=" + recipeId,
+                    {
+                        method: "PUT",
+                        body: JSON.stringify(this.#createRecipe()),
+                        headers: {
+                            "Content-type": "application/json",
+                            "Accept": "application/json",
+                        }
+                    }
+                )
+                return response.status === 204;
+
+            } else {
+                let response = await fetch(
+                    "http://localhost/?c=recipeApi&a=saveRecipe",
+                    {
+                        method: "POST",
+                        body: JSON.stringify(this.#createRecipe()),
+                        headers: {
+                            "Content-type": "application/json",
+                            "Accept": "application/json",
+                        }
+                    }
+                )
+                return response.status === 204;
+            }
+
+        } catch (e) {
+            return false;
+        }
+    }
+
+    #createRecipe() {
+        let ingredients = [];
+        for (let tr of document.getElementsByClassName("recipeIngredient")) {
+            ingredients.push({name: tr.children.item(0).textContent, amount: tr.children.item(1).textContent});
+        }
+        let steps = [];
+        for (let li of this.#stepList.list.children) {
+            steps.push(li.querySelector("textarea").value);
+        }
+        return {
+            recipe: {
+                title: document.getElementById("recipeTitle").value,
+                description: document.getElementById("recipeDescription").value,
+                minutes: document.getElementById("recipeMinutes").value,
+                portions: document.getElementById("recipePortions").value,
+                image: document.getElementById("recipeImage").value,
+                category: document.getElementById("categoryOfFood").value,
+                notes: document.getElementById("recipeNotes").value
+            },
+            ingredients: ingredients,
+            steps: steps
+        }
+    }
+
 
 }
 
