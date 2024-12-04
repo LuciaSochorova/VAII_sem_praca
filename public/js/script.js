@@ -1,4 +1,6 @@
 
 import {RecipeManager} from "./recipeManagment/RecipeManager.js";
 
-document.recipeManager = new RecipeManager();
+if (document.getElementById("recipeForm")) {
+    document.recipeManager = new RecipeManager();
+}
