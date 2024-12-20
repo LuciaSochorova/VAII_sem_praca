@@ -59,6 +59,7 @@ class RecipeManager {
                 document.getElementById('newRecipeIngredient').value = '';
                 document.getElementById('ingredientAmount').value = '';
             }
+            document.getElementById("ingredientsOptions").innerHTML = "";
         }
 
 
@@ -67,11 +68,45 @@ class RecipeManager {
                 if (await this.#saveRecipe()) {
                     window.location.replace("http://localhost/?c=recipe&a=manage");
                     //history.back();
-                }
+                } //TODO
 
             }
 
         }
+
+
+        let timeout = null; //TODO cleanup
+        document.getElementById("newRecipeIngredient").addEventListener("input", async () => {
+            let query = document.getElementById("newRecipeIngredient").value.toLowerCase();
+            const datalist = document.querySelector("datalist");
+            datalist.innerHTML = '';
+            if (query.length < 2) return;
+
+            clearTimeout(timeout)
+            timeout = setTimeout(async function () {let response = await fetch(
+                "http://localhost/?c=ingredientApi&a=getIngredients&query=" + query,
+                {
+                    method: "GET",
+                    body: null,
+                    headers: {
+                        "Content-type": "application/json",
+                        "Accept": "application/json",
+                    }
+                }
+            )
+
+                let options = await response.json();
+
+                options.forEach((item) => {
+                    let option = document.createElement("option");
+                    option.value = item.name;
+                    datalist.appendChild(option);
+                })}, 300);
+
+
+        })
+
+
     }
 
     removeStep(button) {

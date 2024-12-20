@@ -81,9 +81,9 @@ use App\Helpers\RecipeCategory; ?>
 
         <div class="input-group">
             <input type="text" class="form-control w-25" list="ingredientsOptions" id="newRecipeIngredient"
-                   placeholder="Názov ingrediencie">
+                   placeholder="Názov ingrediencie" name = "newRecipeIngredientChoice">
             <datalist id="ingredientsOptions">
-                <!-- TODO <option value="ing">-->
+
             </datalist>
             <input type="text" class="form-control" id="ingredientAmount" placeholder="Množstvo" aria-label="Množstvo">
             <button class="btn btn-dark" type="button" id="addIngredientButton">Pridať</button>
