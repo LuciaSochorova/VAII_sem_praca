@@ -33,10 +33,10 @@ use App\Models\Recipe;
                     <div class="card-footer">
                         <div class="row">
                             <div class="col">
-                                <a class="btn btn-warning text-center h-100 w-100 btn-lg" href="<?= $link->url("recipe.edit", ["id" => $recipe->getId()]) ?>" role="button"><i class="bi bi-pencil-fill"></i></a>
+                                <a role="button" class="btn btn-warning text-center h-100 w-100 btn-lg" href="<?= $link->url("recipe.edit", ["id" => $recipe->getId()]) ?>" ><i class="bi bi-pencil-fill"></i></a>
                             </div>
                             <div class="col">
-                                <a href="<?= $link->url("recipe.delete", ["id" => $recipe->getId()]) ?>" class="btn btn-danger text-center btn-lg w-100 h-100">
+                                <a role="button" class="btn btn-danger text-center btn-lg w-100 h-100" href="<?= $link->url("recipe.delete", ["id" => $recipe->getId()]) ?>" >
                                     <i class="bi bi-trash3-fill"></i>
                                 </a>
                             </div>

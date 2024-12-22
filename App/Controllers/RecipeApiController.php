@@ -147,7 +147,6 @@ class RecipeApiController extends AControllerBase
             $oldRecipe->setImage($newRecipe->getImage());
 
 
-
             foreach ($ingredients as $ingredient) {
                 $existingIngredient = Ingredient::getAll("name = ?", [$ingredient->getName()]);
                 if (empty($existingIngredient)) {
@@ -178,13 +177,13 @@ class RecipeApiController extends AControllerBase
             }
 
             foreach ($steps as $index => $step) {
-                $existingStep = Step::getAll("`recipe_id` = ? AND `text` = ? AND `order` = ?",[$recipeId, $step, $index + 1]);
-                if (empty($existingStep )) {
+                $existingStep = Step::getAll("`recipe_id` = ? AND `text` = ? AND `order` = ?", [$recipeId, $step, $index + 1]);
+                if (empty($existingStep)) {
                     $newStep = new Step();
-                    $newStep ->setOrder($index + 1);
+                    $newStep->setOrder($index + 1);
                     $newStep->setText($step);
                     $newStep->setRecipeId($recipeId);
-                    foreach (Step::getAll("recipe_id = ? AND `order` = ?",[$recipeId, $index + 1]) as $oldStep) {
+                    foreach (Step::getAll("recipe_id = ? AND `order` = ?", [$recipeId, $index + 1]) as $oldStep) {
                         $oldStep->delete();
                     }
                     $newStep->save();

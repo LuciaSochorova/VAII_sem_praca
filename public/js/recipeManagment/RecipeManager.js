@@ -7,6 +7,7 @@ class RecipeManager {
      * @type {DragAndDropList}
      */
     #stepList;
+    #timeOut;
 
 
     constructor() {
@@ -75,25 +76,26 @@ class RecipeManager {
         }
 
 
-        let timeout = null; //TODO cleanup
         document.getElementById("newRecipeIngredient").addEventListener("input", async () => {
-            let query = document.getElementById("newRecipeIngredient").value.toLowerCase();
+            let query = document.getElementById("newRecipeIngredient").value.toLowerCase().trim();
             const datalist = document.querySelector("datalist");
             datalist.innerHTML = '';
             if (query.length < 2) return;
 
-            clearTimeout(timeout)
-            timeout = setTimeout(async function () {let response = await fetch(
-                "http://localhost/?c=ingredientApi&a=getIngredients&query=" + query,
-                {
-                    method: "GET",
-                    body: null,
-                    headers: {
-                        "Content-type": "application/json",
-                        "Accept": "application/json",
+
+            clearTimeout(this.#timeOut)
+            this.#timeOut = setTimeout(async function () {
+                let response = await fetch(
+                    "http://localhost/?c=ingredientApi&a=getIngredients&query=" + query,
+                    {
+                        method: "GET",
+                        body: null,
+                        headers: {
+                            "Content-type": "application/json",
+                            "Accept": "application/json",
+                        }
                     }
-                }
-            )
+                )
 
                 let options = await response.json();
 
@@ -101,7 +103,8 @@ class RecipeManager {
                     let option = document.createElement("option");
                     option.value = item.name;
                     datalist.appendChild(option);
-                })}, 300);
+                })
+            }, 300);
 
 
         })

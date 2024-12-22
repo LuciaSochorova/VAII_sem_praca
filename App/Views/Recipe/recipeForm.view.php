@@ -81,7 +81,7 @@ use App\Helpers\RecipeCategory; ?>
 
         <div class="input-group">
             <input type="text" class="form-control w-25" list="ingredientsOptions" id="newRecipeIngredient"
-                   placeholder="Názov ingrediencie" name = "newRecipeIngredientChoice">
+                   placeholder="Názov ingrediencie" name="newRecipeIngredientChoice">
             <datalist id="ingredientsOptions">
 
             </datalist>
