@@ -24,7 +24,7 @@ class AdminController extends AControllerBase
 
     /**
      * Example of an action (authorization needed)
-     * @return \App\Core\Responses\Response|\App\Core\Responses\ViewResponse
+     * @return Response
      */
     public function index(): Response
     {

@@ -24,7 +24,7 @@ $layout = 'auth';
             <a href="#">Zabudli ste heslo?</a>
         </div>
         <div class="text-center mt-2">
-            <a href="#">Nemáte účet? Zaregistrujte sa</a>
+            <a href="<?= $link->url("signin")?>">Nemáte účet? Zaregistrujte sa</a>
         </div>
     </form>
 

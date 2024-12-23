@@ -6,8 +6,8 @@ body, html {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
-    height: 100%;
+    padding:20px;
+    height: 90%;
 }
 
 .web-content{

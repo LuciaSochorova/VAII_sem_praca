@@ -32,17 +32,18 @@
                     <a class="nav-link" href="<?= $link->url("search.index")?>">Vyhľadávanie</a>
                 </li>
 
-                <!-- todo premiestniť-->
-                <li class="nav-item">
-                    <a class="nav-link" href="<?= $link->url("recipe.add")?>">Pridať recept</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="<?= $link->url("recipe.manage")?>">Spravovať recepty</a>
-                </li>
 
 
 
                 <?php if ($auth->isLogged()) { ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= $link->url("recipe.add")?>">Pridať recept</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= $link->url("recipe.manage")?>">Spravovať recepty</a>
+                    </li>
+
+
                     <li class="nav-item">
                         <a class="nav-link" href="#">Profil</a>
                     </li>

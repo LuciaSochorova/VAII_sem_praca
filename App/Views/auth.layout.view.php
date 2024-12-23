@@ -1,6 +1,7 @@
 <?php
 
 /** @var string $contentHTML */
+/** @var \App\Core\LinkGenerator $link */
 ?>
 <!DOCTYPE html>
 <html lang="sk">
@@ -16,6 +17,11 @@
     <script src="public/js/script.js"></script>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="<?= $link->url("home.index")?>">Receptárik</a>
+    </div>
+</nav>
 <div class="container">
     <div class="web-content">
         <?= $contentHTML ?>

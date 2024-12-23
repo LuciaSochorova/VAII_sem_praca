@@ -8,7 +8,7 @@ use App\Models\Recipe;
 
 
 <div class="container mt-5">
-
+    <p class = "text-danger"><?= $data["message"]?></p>
     <div class="row mt-5 row-cols-1 row-cols-md-2 row-cols-xl-3">
 
         <?php

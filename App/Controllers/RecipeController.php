@@ -10,11 +10,30 @@ use App\Models\Ingredient;
 use App\Models\Recipe;
 use App\Models\Recipe_ingredient;
 use App\Models\RecipeIngredient;
+use App\Models\Role;
 use App\Models\Step;
 
 
 class RecipeController extends AControllerBase
 {
+    /**
+     * @throws HTTPException
+     */
+    public function authorize(string $action)
+    {
+        switch ($action) {
+            case "index":
+                return true;
+            default:
+                if ($this->app->getAuth()->isLogged()) {
+                    return true;
+                } else {
+                    throw new HTTPException(401);
+                }
+
+        }
+    }
+
 
     /**
      * @inheritDoc
@@ -22,33 +41,49 @@ class RecipeController extends AControllerBase
      */
     public function index(): Response
     {
-        return $this->getRecipeDetails();
+        $id = (int)$this->request()->getValue("id");
+        $recipe = Recipe::getOne($id);
+        return $this->getRecipeDetails($recipe);
 
     }
 
-    public function add(): Response {
+    public function add(): Response
+    {
         return $this->html();
     }
 
     /**
      * @throws HTTPException
      */
-    public function edit() : Response
+    public function edit(): Response
     {
-        return $this->getRecipeDetails();
+        $id = (int)$this->request()->getValue("id");
+        $recipe = Recipe::getOne($id);
+        if ($recipe->getAuthorId() !== $this->app->getAuth()->getLoggedUserId()) {
+            if ($this->app->getAuth()->getLoggedUserContext()["role"] !== Role::ADMIN) {
+                throw new HTTPException(403);
+            }
+        }
+        return $this->getRecipeDetails($recipe);
     }
 
     /**
      * @throws HTTPException
      * @throws \Exception
      */
-    public function delete() : Response {
+    public function delete(): Response
+    {
         $id = (int)$this->app->getRequest()->getValue("id");
         $recipe = Recipe::getOne($id);
+        if ($recipe->getAuthorId() !== $this->app->getAuth()->getLoggedUserId()) {
+            if ($this->app->getAuth()->getLoggedUserContext()["role"] !== Role::ADMIN) {
+                throw new HTTPException(403);
+            }
+        }
         if (isset($recipe)) {
             $recipe->delete();
             return $this->redirect($this->url("recipe.manage"));
-        } else{
+        } else {
             throw new HTTPException(404);
         }
 
@@ -57,17 +92,23 @@ class RecipeController extends AControllerBase
     /**
      * @throws HTTPException
      */
-    public function manage() :Response
+    public function manage(): Response
     {
-        // TODO recepty podla $userId
         $number = 18;
         $page = $this->app->getRequest()->getValue("page") ?? 1;
         if ($page < 1) {
             throw new HTTPException(400);
         }
-        $recipes = Recipe::getAll(limit: $number + 1, offset: ($page - 1) * ($number));
+        $whereClause = "`author_id`=?";
+        $whereParams[] = $this->app->getAuth()->getLoggedUserId();
+        if ($this->app->getAuth()->getLoggedUserContext()["role"] == Role::ADMIN) {
+            $whereClause = "";
+            $whereParams = [];
+        }
+        $recipes = Recipe::getAll(whereClause: $whereClause,whereParams: $whereParams,limit: $number + 1, offset: ($page - 1) * ($number));
+        $message = "";
         if (empty($recipes)) {
-            throw new HTTPException(400);
+            $message = "Nezdielali ste zatiaľ žiadny recept.";
         }
         $nextPage = null;
         if (!empty($recipes[$number])) {
@@ -79,7 +120,8 @@ class RecipeController extends AControllerBase
             [
                 'recipes' => $recipes,
                 'currentPage' => $page,
-                'nextPage' => $nextPage
+                'nextPage' => $nextPage,
+                'message' => $message
             ]
         );
     }
@@ -88,19 +130,17 @@ class RecipeController extends AControllerBase
      * @return ViewResponse
      * @throws HTTPException
      */
-    private function getRecipeDetails(): ViewResponse
+    private function getRecipeDetails(Recipe $recipe): ViewResponse
     {
-        $id = (int)$this->request()->getValue("id");
 
-        $recipe = Recipe::getOne($id);
         if (is_null($recipe)) {
             throw new HTTPException(404);
         }
 
-        $steps = Step::getAll(whereClause: "recipe_id = ?", whereParams: [$id], orderBy: "`order`");
+        $steps = Step::getAll(whereClause: "recipe_id = ?", whereParams: [$recipe->getId()], orderBy: "`order`");
 
         $ingredients = [];
-        foreach (Recipe_ingredient::getAll("recipe_id = ?", [$id]) as $recipe_ingredient) {
+        foreach (Recipe_ingredient::getAll("recipe_id = ?", [$recipe->getId()]) as $recipe_ingredient) {
             $ingredient = Ingredient::getOne($recipe_ingredient->getIngredientId());
             $ingredients[] = new RecipeIngredient($ingredient->getName(), $recipe_ingredient->getAmount());
         }

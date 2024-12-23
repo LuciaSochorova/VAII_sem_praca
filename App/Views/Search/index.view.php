@@ -2,24 +2,7 @@
 /** @var \App\Core\LinkGenerator $link */
 /** @var Array $data */
 ?>
-<style>
-    .search-container {
-        position: relative;
-    }
 
-    .suggestionsBox {
-        position: absolute;
-        top: 103%;
-        left: 7.5%;
-        right: 7.5%;
-        background-color: white;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        max-height: 150px;
-        overflow-y: auto;
-        z-index: 1000;
-    }
-</style>
 <div class="container mt-5" id="searchPage">
     <div>
         <div class="mb-3 d-flex gap-2 flex-wrap" id="selectedItems">

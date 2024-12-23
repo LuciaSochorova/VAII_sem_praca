@@ -73,5 +73,20 @@ select, input {
     }
 }
 
+.search-container {
+    position: relative;
+}
 
+.suggestionsBox {
+    position: absolute;
+    top: 103%;
+    left: 7.5%;
+    right: 7.5%;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 1000;
+}
 
