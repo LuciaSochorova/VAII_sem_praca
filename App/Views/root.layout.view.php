@@ -3,11 +3,14 @@
 /** @var string $contentHTML */
 /** @var \App\Core\IAuthenticator $auth */
 /** @var \App\Core\LinkGenerator $link */
+
+use App\Config\Configuration;
+
 ?>
 <!DOCTYPE html>
 <html lang="sk">
 <head>
-    <title><?= \App\Config\Configuration::APP_NAME ?></title>
+    <title><?= Configuration::APP_NAME ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -45,14 +48,14 @@
 
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Profil</a>
+                        <a class="nav-link" href="<?= $link->url("profile.index")?>">Profil</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="<?= $link->url("auth.logout")?>">Odhlásiť</a>
                     </li>
                 <?php } else { ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= \App\Config\Configuration::LOGIN_URL?>">Prihlásenie</a>
+                        <a class="nav-link" href="<?= Configuration::LOGIN_URL?>">Prihlásenie</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="<?= $link->url("auth.signin")?>">Registrácia</a>

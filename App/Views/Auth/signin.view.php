@@ -17,10 +17,10 @@ $layout = 'auth';
 
         <div class="mb-2">
             <label for="password">Heslo</label>
-            <input type="password" class="form-control" id="password" name="password1" placeholder="Zadajte heslo" required>
+            <input type="password" class="form-control" pattern=".{6,}" id="password" name="password1" title="Heslo musí mať minimálne 6 znakov" placeholder="Zadajte heslo" required>
         </div>
         <div class="mb-3">
-            <label for="confirmPassword">Potvrdte heslo</label>
+            <label for="confirmPassword">Potvrďte heslo</label>
             <input type="password" class="form-control" id="confirmPassword" name="password2" placeholder="Zopakujte heslo" required>
         </div>
         <button type="submit" class="btn btn-dark">Registrovať sa</button>

@@ -40,7 +40,6 @@ label {
 select, input {
     box-shadow: 0 1px 1px rgba(0,0,0,0.5);
     text-align: center;
-    max-width: 570px;
     width: 100%;
 }
 
@@ -76,6 +75,8 @@ select, input {
 .search-container {
     position: relative;
 }
+
+
 
 .suggestionsBox {
     position: absolute;

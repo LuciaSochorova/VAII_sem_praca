@@ -40,8 +40,7 @@ class RecipeApiController extends AControllerBase
             && property_exists($json, 'ingredients')
             && property_exists($json, 'steps')
         ) {
-            //$json->recipe->author_id = $this->app->getAuth()->getLoggedUserId();
-            $json->recipe->author_id = 1; //TODO vymazať
+            $json->recipe->author_id = $this->app->getAuth()->getLoggedUserId();
             $ingredients = [];
             $steps = [];
             try {
@@ -76,7 +75,6 @@ class RecipeApiController extends AControllerBase
 
             foreach ($ingredients as $ingredient) {
                 $existing = Ingredient::getAll("name = ?", [$ingredient->getName()]);
-                $ingredientId = 0;
                 if (empty($existing)) {
                     $newIngredient = new Ingredient();
                     $newIngredient->setName($ingredient->getName());
