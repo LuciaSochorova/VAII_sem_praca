@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Core\AControllerBase;
 use App\Core\HTTPException;
+use App\Core\Responses\RedirectResponse;
 use App\Core\Responses\Response;
 use App\Core\Responses\ViewResponse;
 use App\Models\Ingredient;
@@ -94,6 +95,8 @@ class RecipeController extends AControllerBase
      */
     public function manage(): Response
     {
+        $params = [];
+
         $number = 18;
         $page = $this->app->getRequest()->getValue("page") ?? 1;
         if ($page < 1) {
@@ -102,7 +105,14 @@ class RecipeController extends AControllerBase
         $whereClause = "`author_id`=?";
         $whereParams[] = $this->app->getAuth()->getLoggedUserId();
         if ($this->app->getAuth()->getLoggedUserContext()["role"] == Role::ADMIN) {
-            $whereClause = "";
+            $onlyReported = $this->app->getRequest()->getValue("onlyReported") ?? false;
+            if (filter_var($onlyReported, FILTER_VALIDATE_BOOLEAN)) {
+                $whereClause = "`reported` IS NOT NULL";
+                $params["onlyReported"] = true;
+            } else {
+                $whereClause = "";
+            }
+
             $whereParams = [];
         }
         $recipes = Recipe::getAll(whereClause: $whereClause,whereParams: $whereParams,limit: $number + 1, offset: ($page - 1) * ($number));
@@ -116,15 +126,33 @@ class RecipeController extends AControllerBase
             $nextPage = $page + 1;
         }
 
+        $params = array_merge($params, [
+            'recipes' => $recipes,
+            'currentPage' => $page,
+            'nextPage' => $nextPage,
+            'message' => $message
+        ]);
         return $this->html(
-            [
-                'recipes' => $recipes,
-                'currentPage' => $page,
-                'nextPage' => $nextPage,
-                'message' => $message
-            ]
+            $params
         );
     }
+
+    /**
+     * @throws HTTPException
+     */
+    public function report() {
+        $id = (int)$this->app->getRequest()->getValue("id");
+        $recipe = Recipe::getOne($id);
+        if (isset($recipe)) {
+            $recipe->setReported(1);
+            $recipe->save();
+            return new RedirectResponse($this->url('recipe.index', ["id" => $id]));
+        } else {
+            throw new HTTPException(404);
+        }
+    }
+
+
 
     /**
      * @return ViewResponse

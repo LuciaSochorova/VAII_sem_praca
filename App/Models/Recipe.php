@@ -18,6 +18,9 @@ class Recipe extends Model
     protected ?string $image;
     protected ?string $category;
     protected ?string $notes;
+    protected ?int $reported;
+
+
 
     public function getId(): ?int
     {
@@ -131,5 +134,14 @@ class Recipe extends Model
         $this->category = $category;
     }
 
+    public function getReported(): ?int
+    {
+        return $this->reported;
+    }
+
+    public function setReported(?int $reported): void
+    {
+        $this->reported = $reported;
+    }
 
 }

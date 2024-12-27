@@ -10,12 +10,27 @@ use App\Models\Ingredient;
 use App\Models\Recipe;
 use App\Models\Recipe_ingredient;
 use App\Models\RecipeIngredient;
+use App\Models\Role;
 use App\Models\Step;
 use Exception;
 use JsonException;
 
 class RecipeApiController extends AControllerBase
 {
+
+    public function authorize($action): bool
+    {
+
+        if ($this->app->getAuth()->isLogged()) {
+            if ($action == "unReport" && $this->app->getAuth()->getLoggedUserContext()["role"] != Role::ADMIN) {
+                throw new HTTPException(403);
+            }
+            return true;
+        } else {
+            throw new HTTPException(401);
+        }
+
+    }
 
     /**
      * @inheritDoc
@@ -104,6 +119,12 @@ class RecipeApiController extends AControllerBase
     {
         $recipeId = (int)$this->app->getRequest()->getValue("id");
         $oldRecipe = Recipe::getOne($recipeId);
+        if ($this->app->getAuth()->getLoggedUserContext()["role"] != Role::ADMIN ) {
+            if ($this->app->getAuth()->getLoggedUserId() != $oldRecipe->getAuthorId()) {
+                throw new HTTPException(403);
+            }
+        }
+
 
         $json = $this->app->getRequest()->getRawBodyJSON();
 
@@ -192,4 +213,17 @@ class RecipeApiController extends AControllerBase
         }
         return new EmptyResponse();
     }
+
+    public function unReport(): Response {
+        $id = (int)$this->app->getRequest()->getValue("id");
+        $recipe = Recipe::getOne($id);
+        if (isset($recipe)) {
+            $recipe->setReported(null);
+            $recipe->save();
+            return new EmptyResponse();
+        } else {
+            throw new HTTPException(404);
+        }
+    }
+
 }

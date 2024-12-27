@@ -20,9 +20,7 @@ $layout = 'auth';
             <input type="password" class="form-control" id= "password" name="password" placeholder="Zadajte heslo" required>
         </div>
         <button type="submit" name = "submit" class="btn btn-dark mt-4">Prihlásiť sa</button>
-        <div class="text-center mt-3">
-            <a href="#">Zabudli ste heslo?</a>
-        </div>
+
         <div class="text-center mt-2">
             <a href="<?= $link->url("signin")?>">Nemáte účet? Zaregistrujte sa</a>
         </div>

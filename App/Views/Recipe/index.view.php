@@ -1,6 +1,7 @@
 <?php
 /** @var Array $data */
-
+/** @var \App\Core\IAuthenticator $auth */
+/** @var \App\Core\LinkGenerator $link */
 use App\Models\RecipeIngredient;
 use App\Models\Step;
 
@@ -11,17 +12,9 @@ use App\Models\Step;
     <div class="mb-3">
         <h1 class="text-center"><?= $data['recipe']->getTitle() ?></h1>
         <p class="text-center text-muted"><?= $data['recipe']->getDescription() ?> </p>
-        <img src="<?= $data['recipe']->getImage() ?? "public/images/empty_plate.jpg" ?> " class="mx-auto d-block recipe_image" alt="Obrázok receptu">
+        <img src="<?= $data['recipe']->getImage() ?? "public/images/empty_plate.jpg" ?> "
+             class="mx-auto d-block recipe_image" alt="Obrázok receptu">
     </div>
-
-    <!-- TODO
-    <div class="text-center mb-2">
-        <button class="btn btn-dark"><i class="bi bi-box2-heart"></i>
-            Uložiť
-        </button>
-    </div>
-    -->
-
 
     <div class="row mb-4">
         <div class="col-md-6 text-center">
@@ -36,7 +29,7 @@ use App\Models\Step;
 
     <div class="row justify-content-between my-4">
         <div class="col-md-6 ">
-            <h3 class="mb-3">Ingrediencie</h3>
+            <h3 class="mb-3 text-center">Ingrediencie</h3>
             <table class="table">
 
                 <tr class="table-dark">
@@ -45,25 +38,25 @@ use App\Models\Step;
                 </tr>
 
                 <?php
-                    /** @var RecipeIngredient $ingredient */
-                    foreach ($data['ingredients'] as $ingredient) { ?>
-                        <tr>
-                            <td><?= $ingredient->getName() ?></td>
-                            <td><?= $ingredient->getAmount()?></td>
-                        </tr>
-                <?php
-                    }
+                /** @var RecipeIngredient $ingredient */
+                foreach ($data['ingredients'] as $ingredient) { ?>
+                    <tr>
+                        <td><?= $ingredient->getName() ?></td>
+                        <td><?= $ingredient->getAmount() ?></td>
+                    </tr>
+                    <?php
+                }
                 ?>
 
             </table>
         </div>
         <div class="col-md-6">
-            <h3 class="mb-2">Postup</h3>
+            <h3 class="mb-2 text-center">Postup</h3>
             <ol>
                 <?php
                 /** @var Step $step */
                 foreach ($data['steps'] as $step) { ?>
-                    <li><?= $step->getText()?></li>
+                    <li><?= $step->getText() ?></li>
                     <?php
                 }
                 ?>
@@ -71,13 +64,25 @@ use App\Models\Step;
         </div>
     </div>
 
-    <div class="col text-center mb-4">
+    <div class="text-center mb-5">
         <?php
         if (!is_null($data['recipe']->getNotes())):
             ?>
             <h5>Poznámky</h5>
             <p><?= $data['recipe']->getNotes() ?> </p>
         <?php endif; ?>
+    </div>
+
+    <div class="text-center mb-3">
+        <?php
+
+        if (!is_null($data['recipe']->getReported())) {
+            ?>
+            <span class="badge bg-warning">Nahlásené</span>
+        <?php } elseif ($auth->isLogged()) { ?>
+            <a  class="btn btn-link" href="<?= $link->url("recipe.report", ["id" => $data['recipe']->getId()]) ?>">Nahlásiť</a>
+
+        <?php } ?>
     </div>
 
 </div>

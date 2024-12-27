@@ -78,7 +78,7 @@ use App\Models\Role;
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Nie</button>
-                <a role="button" class="btn btn-danger" href="<?= $link->url("profile.delete") ?>" >Áno, vymazať!</a>
+                <a class="btn btn-danger" href="<?= $link->url("profile.delete") ?>" >Áno, vymazať!</a>
             </div>
         </div>
     </div>

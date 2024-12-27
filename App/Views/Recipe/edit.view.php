@@ -1,5 +1,10 @@
 <?php
 /** @var Array $data */
+
+/** @var \App\Core\IAuthenticator $auth */
+
+use App\Models\Role;
+
 ?>
 
 
@@ -11,7 +16,16 @@
 
 
     <?php
-        require "recipeForm.view.php";
+    require "recipeForm.view.php";
+    ?>
+
+    <?php
+    if ($auth->isLogged() && $auth->getLoggedUserContext()["role"] == Role::ADMIN && !is_null($data["recipe"]->getReported())) : ?>
+        <div class="text-center mb-3">
+            <button id="unReportButton" class="btn btn-outline-dark">Označiť ako OK</button>
+        </div>
+    <?php
+    endif;
     ?>
 
 

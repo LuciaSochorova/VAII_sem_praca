@@ -110,6 +110,36 @@ class RecipeManager {
         })
 
 
+        document.getElementById("unReportButton")?.addEventListener("click", async () => {
+            let recipeId = document.getElementById("recipeForm").getAttribute("data-id");
+            try {
+                let response = await fetch(
+                    "http://localhost/?c=recipeApi&a=unReport&id=" + recipeId,
+                    {
+                        method: "PUT",
+                        body: null,
+                        headers: {
+                            "Content-type": "application/json",
+                            "Accept": "application/json",
+                        }
+                    }
+                )
+
+                if (response.status !== 204) {
+                    throw Error();
+                }
+
+                document.getElementById("unReportButton").hidden = true;
+            } catch (e) {
+                //todo
+            }
+
+
+
+        })
+
+
+
     }
 
     removeStep(button) {
