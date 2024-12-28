@@ -125,7 +125,6 @@ class RecipeApiController extends AControllerBase
             }
         }
 
-
         $json = $this->app->getRequest()->getRawBodyJSON();
 
         if (
@@ -166,46 +165,62 @@ class RecipeApiController extends AControllerBase
             $oldRecipe->setImage($newRecipe->getImage());
 
 
+            $oldRecipeIngredients = Recipe_ingredient::getAll("recipe_id = ?", [$recipeId]);
+            foreach ($oldRecipeIngredients as $recipeIngredient) {
+                $recipeIngredient->delete();
+            }
+
             foreach ($ingredients as $ingredient) {
                 $existingIngredient = Ingredient::getAll("name = ?", [$ingredient->getName()]);
                 if (empty($existingIngredient)) {
                     $newIngredient = new Ingredient();
                     $newIngredient->setName($ingredient->getName());
                     $newIngredient->save();
-                    $newIngredientId = $newIngredient->getId();
-                    $newRecipeIngredient = new Recipe_ingredient();
-                    $newRecipeIngredient->setRecipeId($recipeId);
-                    $newRecipeIngredient->setIngredientId($newIngredientId);
-                    $newRecipeIngredient->setAmount($ingredient->getAmount());
-                    $newRecipeIngredient->save();
+                    $ingredientId = $newIngredient->getId();
                 } else {
                     $ingredientId = $existingIngredient[0]->getId();
-                    $oldRecipeIngredient = Recipe_ingredient::getAll("recipe_id = ? AND ingredient_id = ?", [$recipeId, $ingredientId]);
-                    if (empty($oldRecipeIngredient)) {
-                        $newRecipeIngredient = new Recipe_ingredient();
-                        $newRecipeIngredient->setRecipeId($recipeId);
-                        $newRecipeIngredient->setIngredientId($ingredientId);
-                        $newRecipeIngredient->setAmount($ingredient->getAmount());
-                        $newRecipeIngredient->save();
-                    } else {
-                        $oldRecipeIngredient = $oldRecipeIngredient[0];
-                        $oldRecipeIngredient->setAmount($ingredient->getAmount());
-                        $oldRecipeIngredient->save();
+                }
+                $newRecipeIngredient = new Recipe_ingredient();
+                $newRecipeIngredient->setRecipeId($recipeId);
+                $newRecipeIngredient->setIngredientId($ingredientId);
+                $newRecipeIngredient->setAmount($ingredient->getAmount());
+                try {
+                    $newRecipeIngredient->save();
+                } catch (Exception $e) {
+                    $recipeIngredients = Recipe_ingredient::getAll("recipe_id = ?", [$recipeId]);
+                    foreach ($recipeIngredients as $recipeIngredient) {
+                        $recipeIngredient->delete();
                     }
+                    foreach ($oldRecipeIngredients as $recipeIngredient) {
+                        $originalRP = new Recipe_ingredient();
+                        $originalRP->setId($recipeIngredient->getId());
+                        $originalRP->setRecipeId($recipeId);
+                        $originalRP->setIngredientId($recipeIngredient->getIngredientId());
+                        $originalRP->setAmount($recipeIngredient->getAmount());
+                        $originalRP->save();
+                    }
+                    throw new HTTPException(409);
                 }
             }
 
+            $existingSteps = Step::getAll("`recipe_id` = ?", [$recipeId], "`order`");
+            $eStepsCount = count($existingSteps);
+            $nStepCount = 0;
             foreach ($steps as $index => $step) {
-                $existingStep = Step::getAll("`recipe_id` = ? AND `text` = ? AND `order` = ?", [$recipeId, $step, $index + 1]);
-                if (empty($existingStep)) {
+                if ($index < $eStepsCount) {
+                    $newStep = $existingSteps[$index];
+                } else {
                     $newStep = new Step();
                     $newStep->setOrder($index + 1);
-                    $newStep->setText($step);
                     $newStep->setRecipeId($recipeId);
-                    foreach (Step::getAll("recipe_id = ? AND `order` = ?", [$recipeId, $index + 1]) as $oldStep) {
-                        $oldStep->delete();
-                    }
-                    $newStep->save();
+                }
+                $newStep->setText($step);
+                $newStep->save();
+                $nStepCount++;
+            }
+            if ($nStepCount < $eStepsCount) {
+                for ($i = $nStepCount; $i < $eStepsCount; $i++) {
+                    $existingSteps[$i]->delete();
                 }
             }
 
