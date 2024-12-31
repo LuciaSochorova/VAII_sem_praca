@@ -42,15 +42,15 @@ class RecipeSearch {
     }
 
     #fetchSuggestions() {
-        const query = this.#searchInput.value.trim().toLowerCase();
-        if (query.length > 0) {
+        const param = this.#searchInput.value.trim().toLowerCase();
+        if (param.length > 0) {
             clearTimeout(this.#inputTimeout)
             this.#suggestionsBox.innerHTML = "";
             this.#suggestionsBox.classList.remove('d-none');
             this.#inputTimeout = setTimeout(
                 async () => {
                     let response = await fetch(
-                        "http://localhost/?c=ingredientApi&a=getIngredients&query=" + query,
+                        "http://localhost/?c=ingredientApi&a=getIngredients&param=" + param,
                         {
                             method: "GET",
                             body: null,

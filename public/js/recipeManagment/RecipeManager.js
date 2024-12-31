@@ -77,16 +77,16 @@ class RecipeManager {
 
 
         document.getElementById("newRecipeIngredient").addEventListener("input", async () => {
-            let query = document.getElementById("newRecipeIngredient").value.toLowerCase().trim();
+            let param = document.getElementById("newRecipeIngredient").value.toLowerCase().trim();
             const datalist = document.querySelector("datalist");
             datalist.innerHTML = '';
-            if (query.length < 2) return;
+            if (param.length < 2) return;
 
 
             clearTimeout(this.#timeOut)
             this.#timeOut = setTimeout(async function () {
                 let response = await fetch(
-                    "http://localhost/?c=ingredientApi&a=getIngredients&query=" + query,
+                    "http://localhost/?c=ingredientApi&a=getIngredients&param=" + param,
                     {
                         method: "GET",
                         body: null,
