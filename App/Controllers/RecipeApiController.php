@@ -81,9 +81,12 @@ class RecipeApiController extends AControllerBase
                 throw new HTTPException(400, "Invalid recipe format");
             }
 
-            if (!is_null($recipe->getImage()) && isset($image)) {
+            if (isset($image)) {
                 $recipe->setImage(FileManager::saveImage($image));
+            } else {
+                $recipe->setImage(null);
             }
+
             $recipe->save();
             $recipeId = $recipe->getId();
             foreach ($steps as $index => $stepText) {
@@ -139,7 +142,6 @@ class RecipeApiController extends AControllerBase
                 throw new HTTPException(400, "Invalid recipe image format");
             }
         }
-        $oldImage = $oldRecipe->getImage();
 
         if (
             is_object($json)
@@ -169,15 +171,6 @@ class RecipeApiController extends AControllerBase
             } catch (Exception $e) {
                 throw new HTTPException(400, "Invalid recipe format");
             }
-
-            $oldRecipe->setTitle($newRecipe->getTitle());
-            $oldRecipe->setDescription($newRecipe->getDescription());
-            $oldRecipe->setMinutes($newRecipe->getMinutes());
-            $oldRecipe->setNotes($newRecipe->getNotes());
-            $oldRecipe->setPortions($newRecipe->getPortions());
-            $oldRecipe->setCategory($newRecipe->getCategory());
-            $oldRecipe->setImage($newRecipe->getImage());
-
 
             $oldRecipeIngredients = Recipe_ingredient::getAll("recipe_id = ?", [$recipeId]);
             foreach ($oldRecipeIngredients as $recipeIngredient) {
@@ -238,16 +231,33 @@ class RecipeApiController extends AControllerBase
                 }
             }
 
+
             if (isset($image)) {
-                if ($oldImage != null) {
-                    FileManager::deleteFile($oldImage);
+                if ($oldRecipe->getImage() != null) {
+                    FileManager::deleteFile($oldRecipe->getImage());
                 }
-                $oldRecipe->setImage(FileManager::saveImage($image));
+                $newRecipe->setImage(FileManager::saveImage($image));
             } else {
-                if ($oldImage != null) {
-                    FileManager::deleteFile($oldImage);
+                if ($oldRecipe->getImage() != null) {
+                    if (!str_contains($newRecipe->getImage(), $oldRecipe->getImage())) { // image deleted
+                        $newRecipe->setImage(null);
+                        FileManager::deleteFile($oldRecipe->getImage());
+                    } else { //doesnt change
+                        $newRecipe->setImage($oldRecipe->getImage());
+                    }
+                } else {
+                    $newRecipe->setImage(null);
                 }
+
             }
+
+            $oldRecipe->setTitle($newRecipe->getTitle());
+            $oldRecipe->setDescription($newRecipe->getDescription());
+            $oldRecipe->setMinutes($newRecipe->getMinutes());
+            $oldRecipe->setNotes($newRecipe->getNotes());
+            $oldRecipe->setPortions($newRecipe->getPortions());
+            $oldRecipe->setCategory($newRecipe->getCategory());
+            $oldRecipe->setImage($newRecipe->getImage());
             $oldRecipe->save();
         }
         return new EmptyResponse();

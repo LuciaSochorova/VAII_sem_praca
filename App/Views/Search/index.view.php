@@ -51,7 +51,10 @@
                 require "App/Views/Recipe/recipeCard.view.php";
                 ?>
             </div>
-        <?php } ?>
+        <?php }
+        if (!@$data['recipes'][0]):?>
+            <p class="text-danger text-center w-100">Žiadne recepty sa nenašli!</p>
+        <?php endif; ?>
 
     </div>
 

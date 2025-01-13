@@ -22,9 +22,9 @@ use App\Helpers\RecipeCategory; ?>
         <img src="<?= @$data['recipe']?->getImage() ?? "public/images/empty_plate.jpg"?> "
              class="mx-auto d-block recipe_image" alt="Obrázok receptu">
 
-        <p id="imageDesc" <?= $data['recipe']?->getImage() ? 'hidden' : '' ?>>Recept nemá vlastný obrázok</p>
-        <button class="btn btn-danger mt-2" id="deleteImageButton" <?= $data['recipe']?->getImage() ? '' : 'hidden' ?>>Vymazať obrázok</button>
-        <input class="form-control" type="file" name="image" id="recipeImageInput" accept="image/*" <?= $data['recipe']?->getImage() ? 'hidden' : '' ?>>
+        <p id="imageDesc" <?= @$data['recipe']?->getImage() ? 'hidden' : '' ?>>Recept nemá vlastný obrázok</p>
+        <button class="btn btn-danger mt-2" id="deleteImageButton" <?= @$data['recipe']?->getImage() ? '' : 'hidden' ?>>Vymazať obrázok</button>
+        <input class="form-control" type="file" name="image" id="recipeImageInput" accept="image/*" <?= @$data['recipe']?->getImage() ? 'hidden' : '' ?> >
     </div>
 
     <div class="row mb-3 gx-2 w-75 align-items-end">

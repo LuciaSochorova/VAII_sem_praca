@@ -75,6 +75,7 @@ class RecipeController extends AControllerBase
      */
     public function delete(): Response
     {
+
         $id = (int)$this->app->getRequest()->getValue("id");
         $recipe = Recipe::getOne($id);
         if (isset($recipe)) {
@@ -125,7 +126,7 @@ class RecipeController extends AControllerBase
         $recipes = Recipe::getAll(whereClause: $whereClause,whereParams: $whereParams,limit: $number + 1, offset: ($page - 1) * ($number));
         $message = "";
         if (empty($recipes)) {
-            $message = "Nezdielali ste zatiaľ žiadny recept.";
+            $message = "Nevytvorili ste zatiaľ žiadny recept.";
         }
         $nextPage = null;
         if (!empty($recipes[$number])) {

@@ -13,7 +13,7 @@ use App\Models\Recipe;
 ?>
 
 
-<div class="container mt-5">
+<div class="container mt-5" id="recipeAdministrationPage">
     <p class="text-danger"><?= $data["message"] ?></p>
     <?php
     if ($auth->getLoggedUserContext()["role"] == Role::ADMIN) { ?>
@@ -30,7 +30,6 @@ use App\Models\Recipe;
     }
     ?>
     <div class="row mt-5 row-cols-1 row-cols-md-2 row-cols-xl-3">
-
         <?php
         foreach ($data['recipes'] as $recipe) { ?>
             <div class="col">
@@ -57,10 +56,11 @@ use App\Models\Recipe;
                                             class="bi bi-pencil-fill"></i></a>
                             </div>
                             <div class="col">
-                                <a class="btn btn-danger text-center btn-lg w-100 h-100"
-                                   href="<?= $link->url("recipe.delete", ["id" => $recipe->getId()]) ?>">
+                                <button type="button" class="btn btn-danger text-center btn-lg w-100 h-100" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                data-recipeName="<?= $recipe->getTitle() ?>" data-recipeId="<?=$recipe->getId()?>">
                                     <i class="bi bi-trash3-fill"></i>
-                                </a>
+                                </button>
+
                             </div>
 
                         </div>
@@ -90,7 +90,8 @@ use App\Models\Recipe;
                     $params["onlyReported"] = "true";
                 }
                 ?>
-                <li class="page-item"><a class="page-link"
+                <li class="page-item">
+                    <a class="page-link"
                                          href="<?= $link->url("recipe.manage", $params) ?>">Ďalej</a>
                 </li>
             <?php } ?>
@@ -102,4 +103,20 @@ use App\Models\Recipe;
 </div>
 
 
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Vymazať recept</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
 
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Nie, zavrieť.</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Áno, vymazať!</button>
+            </div>
+        </div>
+    </div>
+</div>

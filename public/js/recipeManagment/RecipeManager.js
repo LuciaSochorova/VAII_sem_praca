@@ -259,13 +259,14 @@ class RecipeManager {
         for (let li of this.#stepList.list.children) {
             steps.push(li.querySelector("textarea").value);
         }
+
         return {
             recipe: {
                 title: document.getElementById("recipeTitle").value,
                 description: document.getElementById("recipeDescription").value,
                 minutes: document.getElementById("recipeMinutes").value,
                 portions: document.getElementById("recipePortions").value,
-                image: document.getElementById("recipeImageInput").value,
+                image: document.querySelector("img").src,
                 category: document.getElementById("categoryOfFood").value,
                 notes: document.getElementById("recipeNotes").value
             },
