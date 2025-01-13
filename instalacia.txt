@@ -1,0 +1,8 @@
+Návod na inštaláciu
+0. je potrebné mať nainštalovaný Docker Desktop a PHPStorm
+1. stiahnite si z https://github.com/LuciaSochorova/VAII_sem_praca ZIP alebo skopírujte link https://github.com/LuciaSochorova/VAII_sem_praca.git
+2. otvorte si Docker Desktop
+2. v PHPStorm otvorte stiahnutý projekt alebo ho naklonujte pomocou skopírovaného linku
+3. otvorte si v priečinku docker súbor docker-compose.yml
+4. kliknite na "docker-compose up"  alebo stlačte Ctrl+Shift+F10
+5. v prehliadači zadajte adresu "localhost"
