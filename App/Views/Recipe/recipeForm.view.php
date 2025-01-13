@@ -112,7 +112,7 @@ use App\Helpers\RecipeCategory; ?>
 
         <div class="input-group my-2 ">
             <textarea id="newStep" class="form-control" rows="2" placeholder="Zadajte nový krok"></textarea>
-            <button type="button" id="addStepButton" class="btn btn-primary">Pridať krok</button>
+            <button type="button" id="addStepButton" class="btn btn-dark">Pridať krok</button>
         </div>
     </div>
 

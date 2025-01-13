@@ -52,8 +52,8 @@
                 ?>
             </div>
         <?php }
-        if (!@$data['recipes'][0]):?>
-            <p class="text-danger text-center w-100">Žiadne recepty sa nenašli!</p>
+        if (!@$data['recipes'][0] && @$data["ingredients"][0]):?>
+            <p class="text-danger text-center w-100">Nenašli sa žiadne recepty!</p>
         <?php endif; ?>
 
     </div>

@@ -11,6 +11,19 @@ use App\Models\User;
 class PasswordApiController extends AControllerBase
 {
 
+    public function authorize($action): bool
+    {
+
+        if ($this->app->getAuth()->isLogged()) {
+            return true;
+        } else {
+            throw new HTTPException(401);
+        }
+
+    }
+
+
+
     /**
      * @inheritDoc
      * @throws HTTPException
