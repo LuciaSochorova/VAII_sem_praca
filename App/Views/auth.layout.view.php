@@ -20,7 +20,7 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="<?= $link->url("home.index")?>">Receptárik</a>
+        <a class="navbar-brand" href="<?= $link->url("home.index")?>">Vajková Kuchárka</a>
     </div>
 </nav>
 <div class="container">

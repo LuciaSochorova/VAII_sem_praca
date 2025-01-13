@@ -15,7 +15,7 @@ class Configuration
     /**
      * App name
      */
-    public const APP_NAME = 'Receptárik';
+    public const APP_NAME = 'Vajková Kuchárka';
     public const FW_VERSION = '2.2';
 
     /**
