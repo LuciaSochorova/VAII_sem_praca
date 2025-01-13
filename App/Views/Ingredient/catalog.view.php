@@ -8,7 +8,6 @@
 
     <?php
     $letters = range('a', 'z');
-    //todo other
     ?>
 
 

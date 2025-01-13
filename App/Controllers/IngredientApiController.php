@@ -6,10 +6,9 @@ use App\Core\AControllerBase;
 use App\Core\HTTPException;
 use App\Core\Responses\EmptyResponse;
 use App\Core\Responses\Response;
+use App\Helpers\Role;
 use App\Models\Ingredient;
 use App\Models\Recipe_ingredient;
-use App\Models\RecipeIngredient;
-use App\Models\Role;
 
 class IngredientApiController extends AControllerBase
 {

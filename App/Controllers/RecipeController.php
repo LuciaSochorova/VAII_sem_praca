@@ -7,11 +7,12 @@ use App\Core\HTTPException;
 use App\Core\Responses\RedirectResponse;
 use App\Core\Responses\Response;
 use App\Core\Responses\ViewResponse;
+use App\Helpers\FileManager;
+use App\Helpers\Role;
 use App\Models\Ingredient;
 use App\Models\Recipe;
 use App\Models\Recipe_ingredient;
 use App\Models\RecipeIngredient;
-use App\Models\Role;
 use App\Models\Step;
 
 
@@ -76,12 +77,18 @@ class RecipeController extends AControllerBase
     {
         $id = (int)$this->app->getRequest()->getValue("id");
         $recipe = Recipe::getOne($id);
-        if ($recipe->getAuthorId() !== $this->app->getAuth()->getLoggedUserId()) {
-            if ($this->app->getAuth()->getLoggedUserContext()["role"] !== Role::ADMIN) {
-                throw new HTTPException(403);
-            }
-        }
         if (isset($recipe)) {
+            if ($recipe->getAuthorId() !== $this->app->getAuth()->getLoggedUserId()) {
+                if ($this->app->getAuth()->getLoggedUserContext()["role"] !== Role::ADMIN) {
+                    throw new HTTPException(403);
+                }
+            }
+
+            if ($recipe->getImage()) {
+                if(FileManager::deleteFile($recipe->getImage())) {
+                    $recipe->setImage(null);
+                }
+            }
             $recipe->delete();
             return $this->redirect($this->url("recipe.manage"));
         } else {

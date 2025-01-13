@@ -64,12 +64,14 @@ class RecipeManager {
         }
 
 
-        document.getElementById("saveRecipe").onclick = async () => {
+        document.getElementById("saveRecipe").onclick = async (event) => {
+            event.preventDefault()
             if (this.isValid()) {
                 if (await this.#saveRecipe()) {
                     window.location.replace("http://localhost/?c=recipe&a=manage");
-                    //history.back();
-                } //TODO
+                } else {
+                    alert("Recept sa nepodarilo uložiť. Skontrolujte formulár a skúste ešte raz.")
+                }
 
             }
 
@@ -131,12 +133,31 @@ class RecipeManager {
 
                 document.getElementById("unReportButton").hidden = true;
             } catch (e) {
-                //todo
+                alert("Recept sa nepodarilo zvalidovať. Skontrolujte polia a skúste ešte raz.")
+            }
+        })
+
+        document.getElementById("deleteImageButton").addEventListener("click",(event) => this.#deleteImage(event))
+
+        document.getElementById("recipeImageInput").addEventListener("change", (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                if (!file.type.startsWith("image/")) {
+                    alert("Vybraný súbor nie je obrázok. Prosím, nahrajte platný obrázok.");
+                    event.target.value = "";
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.querySelector("img").src = e.target.result;
+                    document.getElementById("imageDesc").hidden = true;
+                    event.target.hidden = true;
+                    document.getElementById("deleteImageButton").hidden = false;
+                };
+                reader.readAsDataURL(file);
             }
 
-
-
-        })
+        });
 
 
 
@@ -195,40 +216,38 @@ class RecipeManager {
     }
 
     async #saveRecipe() {
+
         try {
             let recipeId = document.getElementById("recipeForm").getAttribute("data-id");
+            let formData = new FormData();
+            let data = this.#createRecipe();
+            formData.set("data", JSON.stringify(data));
+            formData.append("image", document.getElementById("recipeImageInput").files[0]);
+
+            let response;
             if (recipeId > 0) {
-                let response = await fetch(
+                response = await fetch(
                     "http://localhost/?c=recipeApi&a=updateRecipe&id=" + recipeId,
                     {
-                        method: "PUT",
-                        body: JSON.stringify(this.#createRecipe()),
-                        headers: {
-                            "Content-type": "application/json",
-                            "Accept": "application/json",
-                        }
+                        method: "POST",
+                        body: formData
                     }
-                )
-                return response.status === 204;
-
+                );
             } else {
-                let response = await fetch(
+                response = await fetch(
                     "http://localhost/?c=recipeApi&a=saveRecipe",
                     {
                         method: "POST",
-                        body: JSON.stringify(this.#createRecipe()),
-                        headers: {
-                            "Content-type": "application/json",
-                            "Accept": "application/json",
-                        }
+                        body: formData
                     }
-                )
-                return response.status === 204;
+                );
             }
 
+            return response.status === 204;
         } catch (e) {
             return false;
         }
+
     }
 
     #createRecipe() {
@@ -246,13 +265,29 @@ class RecipeManager {
                 description: document.getElementById("recipeDescription").value,
                 minutes: document.getElementById("recipeMinutes").value,
                 portions: document.getElementById("recipePortions").value,
-                image: document.getElementById("recipeImage").value,
+                image: document.getElementById("recipeImageInput").value,
                 category: document.getElementById("categoryOfFood").value,
                 notes: document.getElementById("recipeNotes").value
             },
             ingredients: ingredients,
             steps: steps
         }
+    }
+
+
+    #deleteImage(event) {
+        event.preventDefault();
+        const defaultImage = "public/images/empty_plate.jpg";
+        const imageElement = document.querySelector("img");
+        const imageDesc = document.getElementById("imageDesc");
+        const deleteButton = document.getElementById("deleteImageButton");
+        const imageInput = document.getElementById("recipeImageInput");
+
+        imageElement.src = defaultImage;
+        imageDesc.hidden = false;
+        deleteButton.hidden = true;
+        imageInput.hidden = false;
+        imageInput.value = "";
     }
 
 

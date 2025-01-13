@@ -18,7 +18,7 @@ class IngredientManager {
                 if (await this.#deleteIngredient(ingredientId)) {
                     button.closest(".ingredient-div").remove()
                 } else {
-                    //todo
+                    alert("Nepodarilo sa vymazať ingredienciu.")
                 }
             };
         })
@@ -42,7 +42,7 @@ class IngredientManager {
                     this.#switchButtonsDisplay(saveButton, editButton)
                     input.disabled = true;
                 } else {
-                    //todo
+                    alert("Vyskytol sa problém pri ukladaní zmien!")
                 }
 
             }

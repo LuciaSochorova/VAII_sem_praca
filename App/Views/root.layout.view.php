@@ -6,7 +6,7 @@
 /** @var \App\Core\LinkGenerator $link */
 
 use App\Config\Configuration;
-use App\Models\Role;
+use App\Helpers\Role;
 
 ?>
 <!DOCTYPE html>

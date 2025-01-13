@@ -3,7 +3,7 @@
 
 /** @var \App\Core\IAuthenticator $auth */
 
-use App\Models\Role;
+use App\Helpers\Role;
 
 ?>
 

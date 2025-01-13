@@ -6,11 +6,12 @@ use App\Core\AControllerBase;
 use App\Core\HTTPException;
 use App\Core\Responses\EmptyResponse;
 use App\Core\Responses\Response;
+use App\Helpers\FileManager;
+use App\Helpers\Role;
 use App\Models\Ingredient;
 use App\Models\Recipe;
 use App\Models\Recipe_ingredient;
 use App\Models\RecipeIngredient;
-use App\Models\Role;
 use App\Models\Step;
 use Exception;
 use JsonException;
@@ -47,7 +48,9 @@ class RecipeApiController extends AControllerBase
      */
     public function saveRecipe(): Response
     {
-        $json = $this->app->getRequest()->getRawBodyJSON();
+        $postData = $this->app->getRequest()->getPost();
+        $json = json_decode($postData["data"], flags: JSON_THROW_ON_ERROR);
+        $image = $this->request()->getFiles()['image'];
 
         if (
             is_object($json)
@@ -78,6 +81,9 @@ class RecipeApiController extends AControllerBase
                 throw new HTTPException(400, "Invalid recipe format");
             }
 
+            if (!is_null($recipe->getImage()) && isset($image)) {
+                $recipe->setImage(FileManager::saveImage($image));
+            }
             $recipe->save();
             $recipeId = $recipe->getId();
             foreach ($steps as $index => $stepText) {
@@ -125,7 +131,15 @@ class RecipeApiController extends AControllerBase
             }
         }
 
-        $json = $this->app->getRequest()->getRawBodyJSON();
+        $postData = $this->app->getRequest()->getPost();
+        $json = json_decode($postData["data"], flags: JSON_THROW_ON_ERROR);
+        $image = $this->request()->getFiles()['image'];
+        if (isset($image)) {
+            if (!str_starts_with($image["type"], "image/" ) ) {
+                throw new HTTPException(400, "Invalid recipe image format");
+            }
+        }
+        $oldImage = $oldRecipe->getImage();
 
         if (
             is_object($json)
@@ -224,6 +238,16 @@ class RecipeApiController extends AControllerBase
                 }
             }
 
+            if (isset($image)) {
+                if ($oldImage != null) {
+                    FileManager::deleteFile($oldImage);
+                }
+                $oldRecipe->setImage(FileManager::saveImage($image));
+            } else {
+                if ($oldImage != null) {
+                    FileManager::deleteFile($oldImage);
+                }
+            }
             $oldRecipe->save();
         }
         return new EmptyResponse();

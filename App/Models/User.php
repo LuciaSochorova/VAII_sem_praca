@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Core\Model;
+use App\Helpers\Role;
 
 class User extends Model
 {

@@ -3,7 +3,7 @@
 
 /** @var \App\Core\LinkGenerator $link */
 
-use App\Models\Role;
+use App\Helpers\Role;
 
 ?>
 
